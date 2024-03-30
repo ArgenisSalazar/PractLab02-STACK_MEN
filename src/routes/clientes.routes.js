@@ -3,24 +3,24 @@ import pool from '../database.js'
 
 const router = Router();
 
-router.get('/add', (req, res) => {
+router.get('/addcli', (req, res) => {
     res.render('clientes/add');
 });
 
-router.post('/add', async(req, res) => {
+router.post('/addcli', async(req, res) => {
     try {
         const { nomcli, apecli, nrodnicli, telcli } = req.body;
         const newCliente = {
             nomcli, apecli, nrodnicli, telcli
         }
         await pool.query('INSERT INTO cliente SET ?', [newCliente]);
-        res.redirect('/list');
+        res.redirect('/listcli');
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-router.get('/list', async(req, res) => {
+router.get('/listcli', async(req, res) => {
     try {
         const [result] = await pool.query('SELECT * FROM cliente');
         res.render('clientes/list', { clientes: result });
@@ -30,7 +30,7 @@ router.get('/list', async(req, res) => {
     }
 });
 
-router.get('/edit/:id', async(req, res) => {
+router.get('/editcli/:id', async(req, res) => {
     try {
         const { id } = req.params;
         const [cliente] = await pool.query('SELECT * FROM cliente WHERE idcli = ?', [id]);
@@ -42,24 +42,24 @@ router.get('/edit/:id', async(req, res) => {
     }
 });
 
-router.post('/edit/:id', async(req, res) => {
+router.post('/editcli/:id', async(req, res) => {
     try {
         const { nomcli, apecli, nrodnicli, telcli } = req.body;
         const { id } = req.params;
         const editCliente = { nomcli, apecli, nrodnicli, telcli };
         await pool.query('UPDATE cliente SET ? WHERE idcli = ?', [editCliente, id]);
-        res.redirect('/list');
+        res.redirect('/listcli');
     }
     catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-router.get('/delete/:id', async(req, res)=>{
+router.get('/deletecli/:id', async(req, res)=>{
     try{
         const {id} = req.params;
         await pool.query('DELETE FROM cliente WHERE idcli = ?', [id]);
-        res.redirect('/list');
+        res.redirect('/listcli');
     }
     catch(err){
         res.status(500).json({ message: err.message });
